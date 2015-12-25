@@ -30,9 +30,9 @@ namespace Ex03.GarageLogic
             }
         }
 
-        protected override object GetValue()
+        protected override object Value
         {
-            return (object)m_LicenseType;
+            get { return m_LicenseType; }
         }
     }
 }

@@ -30,14 +30,9 @@ namespace Ex03.GarageLogic
             }
         }
 
-        public override string ToString()
+        protected override object Value
         {
-            return string.Format("{0}: {1}", m_Description, m_Color);
-        }
-
-        protected override object GetValue()
-        {
-            return (object)m_Color;
+            get { return m_Color; }
         }
     }
 }
