@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Ex03.GarageLogic
 {
     public class ColorFeature : Feature
     {
-        const bool k_IgnoreCaseDifferences = true;
         private eCarColor m_Color;
 
         private enum eCarColor 
@@ -18,13 +20,14 @@ namespace Ex03.GarageLogic
 
         public ColorFeature()
         {
-            m_Description = "Color {Red/Blue/Black/White}";
+            m_Description = "Color";
+            m_PossibleValues = "{Red/Blue/Black/White}";
         }
 
         public override void SetValue(string i_ValueStr)
         {
-            eCarColor currCarColor;
-            bool inputValid = Enum.TryParse(i_ValueStr, V_IgnoreCaseDifferences, out currCarColor);
+            const bool v_IgnoreCaseDifferences = true;
+            bool inputValid = Enum.TryParse(i_ValueStr, v_IgnoreCaseDifferences, out m_Color);
             if (!inputValid)
             {
                 throw new NotImplementedException();
@@ -33,7 +36,7 @@ namespace Ex03.GarageLogic
 
         public override string ToString()
         {
-            return m_Description + ": " + m_Color.ToString();
+            return string.Format("{0}: {1}", m_Description, m_Color);
         }
     }
 }

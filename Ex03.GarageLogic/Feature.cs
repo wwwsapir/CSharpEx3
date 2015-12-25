@@ -1,18 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Ex03.GarageLogic
+﻿namespace Ex03.GarageLogic
 {
-    public abstract class Feature
-    {
-        protected string m_Description = "";
+     public abstract class Feature
+     {
+          protected string m_Description;
+          protected string m_PossibleValues;
 
-        public string Description
-        {
-            get { return m_Description; }
-        }
+          public string Description
+          {
+               get
+               {
+                    return string.Format("{0} {1}", m_Description, m_PossibleValues);
+               }
+          }
 
-        abstract public void SetValue(string i_ValueStr);
-        abstract override public string ToString();
-    }
+          public abstract void SetValue(string i_ValueStr);
+          public abstract override string ToString();
+     }
 }
