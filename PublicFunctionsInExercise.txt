@@ -1,0 +1,60 @@
+GarageUI:
+GarageUI();
+void StartGarageManagementProgram();
+void AddVehicleToSystem();
+void PresentRegistrationNumbersList();
+void ChangeVehicleState();
+void FillTiresOfAVehicleToMax();
+void FillFuelTankOfAVehicle();
+void ChargeElectricalVehicle();
+void ShowVehicleData();
+
+GarageSystem:
+GarageSystem();
+void PresentRegistrationNumbersList(Nullable<eVehicleStatus> i_StatusToFilterBy);
+void ChangeVehicleState(string i_RegistrationNumber, eVehicleStatus i_NewStatus);
+void FillTiresOfAVehicleToMax(string i_RegistrationNumber);
+void FillFuelTankOfAVehicle(string i_RegistrationNumber, eFuelType i_FuelType, float i_FuelLitersToAdd);
+void ChargeElectricalVehicle(string i_RegistrationNumber, int i_NumberOfMinutesToCharge);
+void ShowVehicleData(string i_RegistrationNumber);
+
+VehicleListing:
+VehicleListing(string i_RegistrationNumber, VehicleInfo i_VehicleInfo);
+
+VehicleInfo:
+VehicleInfo(Vehicle i_Vehicle, OwnerInfo i_OwnerInfo);
+
+OwnerInfo:
+OwnerInfo(string i_Name, string i_PhoneNumber);
+
+Vehicle:
+Vehicle();
+void FillTiresToMax();
+
+EnergySource:
+void fillEnergy(eFuleType i_FuelType, float i_LitersToFill);
+void fillEnergy(int i_NumOfMinuteToCharge);
+
+ElectricalSource : EnergySource:
+ElectricalSource(float i_BatteryHoursLeft, float i_MaxBatteryHours);
+void fillEnergy(eFuleType i_FuelType, float i_LitersToFill);   //Throws Exception!!
+void fillEnergy(int i_NumOfMinuteToCharge);
+
+FuelSource : EnergySource:
+FuelSource(eFuelType i_FuelType, float i_StartingFuelAmount, float i_MaxFuelAmount);
+void fillEnergy(eFuleType i_FuelType, float i_LitersToFill);
+void fillEnergy(int i_NumOfMinuteToCharge);   //Throws Exception!!
+
+Tire:
+Tire(string i_ManufacturerName, float i_CurrAirPressure, float i_MaxAirPressure);
+void FillAirToMax();
+
+Feature (Abstract):
+string Description();                                   //m_Description getter. Example: "color {black/white/red/blue}", "lisence type {A,A1,A4,C}", "containment of dangerous components {yes/no}"
+void InsertValue(string i_FeatureValue);      //Checks if the value is valid for this specisic description, then get the value (if not - exeption)
+**(Feature has sons that each of them implemets feature's methods)
+
+VehicleCreator:
+VehicleCreator();
+void CreateVehicle(string i_VehicleType, string i_EnergySourceType);
+//This method creates an empty vehicle, then the UI calls the vehicle and fills all the data of the vehicle from the user.
