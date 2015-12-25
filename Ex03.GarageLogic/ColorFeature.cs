@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Ex03.GarageLogic
 {
@@ -30,7 +26,7 @@ namespace Ex03.GarageLogic
             bool inputValid = Enum.TryParse(i_ValueStr, v_IgnoreCaseDifferences, out m_Color);
             if (!inputValid)
             {
-                throw new NotImplementedException();
+                throw new FormatException();
             }
         }
 

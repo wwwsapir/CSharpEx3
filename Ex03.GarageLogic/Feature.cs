@@ -13,7 +13,12 @@
                }
           }
 
+          public override string ToString()
+          {
+              return string.Format("{0}: {1}", m_Description, GetValue().ToString());
+          }
+
           public abstract void SetValue(string i_ValueStr);
-          public abstract override string ToString();
+          protected abstract object GetValue();
      }
 }
