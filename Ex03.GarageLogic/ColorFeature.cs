@@ -2,11 +2,11 @@
 
 namespace Ex03.GarageLogic
 {
-    public class ColorFeature : Feature
+    public sealed class ColorFeature : Feature
     {
-        private eCarColor m_Color;
+        private eColor m_Color;
 
-        private enum eCarColor 
+        private enum eColor 
         {
             Red,
             Blue,
@@ -33,6 +33,11 @@ namespace Ex03.GarageLogic
         public override string ToString()
         {
             return string.Format("{0}: {1}", m_Description, m_Color);
+        }
+
+        protected override object GetValue()
+        {
+            return (object)m_Color;
         }
     }
 }

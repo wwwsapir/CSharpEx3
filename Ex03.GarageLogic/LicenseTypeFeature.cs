@@ -2,7 +2,7 @@
 
 namespace Ex03.GarageLogic
 {
-    public class LicenseTypeFeature : Feature
+    public sealed class LicenseTypeFeature : Feature
     {
         private eLicenseType m_LicenseType;
 
@@ -30,5 +30,9 @@ namespace Ex03.GarageLogic
             }
         }
 
+        protected override object GetValue()
+        {
+            return (object)m_LicenseType;
+        }
     }
 }
