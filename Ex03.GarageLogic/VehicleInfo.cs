@@ -12,7 +12,7 @@ namespace Ex03.GarageLogic
 
         public VehicleInfo(string i_VehicleType)
         {
-            m_VehicleType = i_VehicleType;      //UI already checked via VehicleCreator function that the vehicle type is valid
+            m_VehicleType = i_VehicleType;      // UI already checked via VehicleCreator function that the vehicle type is valid
             GarageSystemManager.m_VehicleCreator.CreateVehicle(this, i_VehicleType);
         }
 
