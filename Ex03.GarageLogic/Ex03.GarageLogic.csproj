@@ -44,8 +44,11 @@
     <Compile Include="ColorFeature.cs" />
     <Compile Include="DangerousComponentsCarryFeature.cs" />
     <Compile Include="DoorsNumberFeature.cs" />
+    <Compile Include="ElectricalEnergySource.cs" />
+    <Compile Include="EnergySource.cs" />
     <Compile Include="EngineCapacityFeature.cs" />
     <Compile Include="Feature.cs" />
+    <Compile Include="FuelEnergySource.cs" />
     <Compile Include="GarageSystemManager.cs" />
     <Compile Include="LicenseTypeFeature.cs" />
     <Compile Include="MaxCarryWeightFeature.cs" />
@@ -53,6 +56,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tire.cs" />
+    <Compile Include="VehicleInfo.cs" />
     <Compile Include="VehicleListing.cs" />
   </ItemGroup>
   <ItemGroup>
