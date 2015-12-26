@@ -14,6 +14,12 @@ namespace Ex03.GarageLogic
             set { m_VehicleStatus = value; }
         }
 
+        public VehicleInfo VehicleInfo
+        {
+            get { return m_VehicleInfo; }
+            set { m_VehicleInfo = value; }
+        }
+
         public enum eVehicleStatus
         {
             InRepair,

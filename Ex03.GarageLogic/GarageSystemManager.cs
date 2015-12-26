@@ -70,28 +70,28 @@ namespace Ex03.GarageLogic
             float i_FuelLitersToAdd)
         {
             EnergySource energySource = getListingToChange(i_RegistrationNumber).VehicleInfo.EnergySource;
-            FuelSource fuelEnergySource = energySource as FuelEnergySource;
+            FuelEnergySource fuelEnergySource = energySource as FuelEnergySource;
             if (fuelEnergySource == null)
             {
                 throw new ArgumentException("The requested vehicle's energy source is not fuel-based!");
             }
             else
             {
-                fuelEnergySource.fillEnergy(i_FuelType, i_LitersToFill);
+                fuelEnergySource.FillFuelTank(i_FuelType, i_FuelLitersToAdd);
             }
         }
 
         public void ChargeElectricalVehicle(string i_RegistrationNumber, int i_NumberOfMinutesToCharge)
         {
             EnergySource energySource = getListingToChange(i_RegistrationNumber).VehicleInfo.EnergySource;
-            ElectricalSource electricalEnergySource = energySource as FuelEnergySource;
+            ElectricalEnergySource electricalEnergySource = energySource as ElectricalEnergySource;
             if (electricalEnergySource == null)
             {
                 throw new ArgumentException("The requested vehicle's energy source is not electrical!");
             }
             else
             {
-                electricalEnergySource.fillEnergy(i_NumOfMinuteToCharge);
+                electricalEnergySource.FillBattery(i_NumberOfMinutesToCharge);
             }
         }
     }
