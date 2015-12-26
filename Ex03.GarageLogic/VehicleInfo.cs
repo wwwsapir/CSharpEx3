@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Ex03.GarageLogic
 {
@@ -13,6 +12,7 @@ namespace Ex03.GarageLogic
 
         public VehicleInfo(string i_VehicleType)
         {
+            m_VehicleType = i_VehicleType;      //UI already checked via VehicleCreator function that the vehicle type is valid
             GarageSystemManager.m_VehicleCreator.CreateVehicle(this, i_VehicleType);
         }
 
@@ -22,6 +22,30 @@ namespace Ex03.GarageLogic
             {
                 tire.FillAirToMax();
             }
+        }
+
+        public string ModelName
+        {
+            get { return m_ModelName; }
+            set { m_ModelName = value; }
+        }
+
+        public EnergySource EnergySource
+        {
+            get { return m_EnergySource; }
+            set { m_EnergySource = value; }
+        }
+
+        public List<Tire> TiresList
+        {
+            get { return m_TiresList; }
+            set { m_TiresList = value; }
+        }
+
+        public List<Feature> FeaturesList
+        {
+            get { return m_FeaturesList; }
+            set { m_FeaturesList = value; }
         }
     }
 }
