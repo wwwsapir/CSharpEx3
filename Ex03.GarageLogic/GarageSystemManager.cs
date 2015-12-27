@@ -6,7 +6,7 @@ namespace Ex03.GarageLogic
     public sealed class GarageSystemManager
     {
         private readonly Dictionary<string, VehicleListing> r_VehiclesListings = new Dictionary<string, VehicleListing>();
-        internal static VehicleCreator m_VehicleCreator;
+        internal static readonly VehicleCreator sr_VehicleCreator;
 
         public LinkedList<string> GetRegistrationNumbersList(VehicleListing.eVehicleStatus? i_StatusToFilterBy = null)
         {
