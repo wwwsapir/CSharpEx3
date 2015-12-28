@@ -1,10 +1,11 @@
-﻿using System;
+﻿using System.Text;
+using System;
 using Ex03.GarageLogic;
 
 namespace Ex03.ConsoleUI
 {
     using System.Globalization;
-    using System.Text;
+    using System.Linq;
 
     public class GarageUI // TODO: decide: maybe should be GarageUIManager
     {
@@ -22,6 +23,11 @@ namespace Ex03.ConsoleUI
             ChargeElectricalVehicle,
             ShowVehicleData,
             Exit
+        }
+
+        private static TEnum getHighestValueForEnum<TEnum>()
+        {
+            return Enum.GetValues(typeof(TEnum)).Cast<TEnum>().Max();
         }
 
         public void StartGarageManagementProgram()
@@ -90,7 +96,7 @@ namespace Ex03.ConsoleUI
                     m_KeepRunning = false;
                     break;
                 default:
-                    throw new ValueOutOfRangeException("Enum value does not Exists");
+                    throw new ValueOutOfRangeException("Enum value does not Exists", 0, (float)getHighestValueForEnum<eMenuOptions>());
             }
         }
 
@@ -144,7 +150,6 @@ namespace Ex03.ConsoleUI
                     throw;
                 }
             }
-           
         }
 
         private OwnerInfo getNewOwnerInfo()
@@ -344,7 +349,6 @@ Registration Number: {0}
 {1}",
             registrationNumber,
             vehicleListing.ToString());
-
             ConsoleUtilities.PromptMessage(messageToUser);
         }
     }
