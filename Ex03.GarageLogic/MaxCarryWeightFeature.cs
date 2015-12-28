@@ -9,7 +9,7 @@ namespace Ex03.GarageLogic
         public MaxCarryWeightFeature()
         {
             m_Description = "Engine Capacity (in tons)";
-            m_PossibleValues = "{ Decimal number in range 0..100 }";
+            this.m_PossibleValues = "{ Decimal number in range 0..100 }";
         }
 
         public override void SetValue(string i_ValueStr)

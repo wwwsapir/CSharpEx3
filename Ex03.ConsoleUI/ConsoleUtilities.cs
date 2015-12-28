@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 
 namespace Ex03.ConsoleUI
 {
@@ -7,8 +8,9 @@ namespace Ex03.ConsoleUI
         private const string k_YesStr = "Y";
         private const string k_NoStr = "N";
         private const int k_MaxNumOfDigitsInInput = 10;
+        private const int k_MaxNumOfAllowedChars = 30;
 
-        internal static void PromptMessage(string i_Message)
+        public static void PromptMessage(string i_Message)
         {
             Console.Clear();
             Console.WriteLine(i_Message);
@@ -16,7 +18,7 @@ namespace Ex03.ConsoleUI
             Console.ReadLine();
         }
 
-        internal static bool AskUserBooleanQuestion(string i_QuestionString)
+        public static bool AskUserBooleanQuestion(string i_QuestionString)
         {
             bool? resultValue = null;
 
@@ -34,7 +36,7 @@ namespace Ex03.ConsoleUI
                         resultValue = false;
                         break;
                     default:
-                        ShowBadInputMessage();
+                        ShowBadInputMessage("Input must be in the given format above");
                         break;
                 }
             }
@@ -42,7 +44,12 @@ namespace Ex03.ConsoleUI
             return resultValue.Value;
         }
 
-        internal static string GetInputString(string i_MessageToUser, int i_MaxNumOfAllowedChars)
+        public static string GetInputString(string i_MessageToUser)
+        {
+            return GetInputString(i_MessageToUser, k_MaxNumOfAllowedChars);
+        }
+
+        public static string GetInputString(string i_MessageToUser, int i_MaxNumOfAllowedChars)
         {
             Console.WriteLine(i_MessageToUser);
             string strnextAction = Console.ReadLine();
@@ -50,32 +57,42 @@ namespace Ex03.ConsoleUI
 
             while (string.IsNullOrEmpty(strnextAction) || strnextAction.Length > i_MaxNumOfAllowedChars)
             {
-                ShowBadInputMessage();
+                ShowBadInputMessage("Empty Input is not allowed");
                 strnextAction = Console.ReadLine();
             }
 
             return strnextAction;
         }
 
-        internal static int GetPosNumFromUser(string i_MessageToUser)
+        public static decimal GetPosNumFromUser(string i_MessageToUser, bool i_OnlyInteger)
         {
-            int intParseRes;
+            decimal decimalParseRes;
+            NumberStyles style;
 
-            string strnextAction = GetInputString(i_MessageToUser, k_MaxNumOfDigitsInInput);
-            bool strIsPosNumber = int.TryParse(strnextAction, out intParseRes) && intParseRes > 0;     // Checking if a positive valid number entered
-            while (!strIsPosNumber)
+            if (i_OnlyInteger)
             {
-                ShowBadInputMessage();
-                strnextAction = GetInputString(i_MessageToUser, k_MaxNumOfDigitsInInput);
-                strIsPosNumber = int.TryParse(strnextAction, out intParseRes) && intParseRes > 0;     // Checking if a positive valid number entered
+                style = NumberStyles.Integer;
+            }
+            else
+            {
+                style = NumberStyles.AllowDecimalPoint;
             }
 
-            return intParseRes;
+            string strnextAction = GetInputString(i_MessageToUser, k_MaxNumOfDigitsInInput);
+            bool inputIsValid = decimal.TryParse(strnextAction, style, CultureInfo.CurrentCulture, out decimalParseRes) && decimalParseRes > 0;     // Checking if a positive valid number entered
+            while (!inputIsValid)
+            {
+                ShowBadInputMessage("Input may only contains digits(zero value is not allowed) try again..");
+                strnextAction = GetInputString(i_MessageToUser, k_MaxNumOfDigitsInInput);
+                inputIsValid = decimal.TryParse(strnextAction, style, CultureInfo.CurrentCulture, out decimalParseRes) && decimalParseRes > 0;     // Checking if a positive valid number entered
+            }
+
+            return decimalParseRes;
         }
 
-        internal static void ShowBadInputMessage()
+        public static void ShowBadInputMessage(string i_Reason)
         {
-            Console.WriteLine("Input is not Legal, try again");
+            Console.WriteLine("Input is not valid; " + i_Reason);
         }
     }
 }

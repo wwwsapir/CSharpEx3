@@ -17,7 +17,7 @@ namespace Ex03.GarageLogic
         public LicenseTypeFeature()
         {
             m_Description = "License Type";
-            m_PossibleValues = "{A/A1/A4/C}";
+            this.m_PossibleValues = "{A/A1/A4/C}";
         }
 
         public override void SetValue(string i_ValueStr)

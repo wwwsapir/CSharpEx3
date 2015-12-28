@@ -58,6 +58,8 @@
     <Compile Include="OwnerInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tire.cs" />
+    <Compile Include="ValueOutOfRangeException.cs" />
+    <Compile Include="VehicleCreator.cs" />
     <Compile Include="VehicleInfo.cs" />
     <Compile Include="VehicleListing.cs" />
   </ItemGroup>

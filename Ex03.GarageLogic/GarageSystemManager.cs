@@ -6,7 +6,6 @@ namespace Ex03.GarageLogic
     public sealed class GarageSystemManager
     {
         private readonly Dictionary<string, VehicleListing> r_VehiclesListings = new Dictionary<string, VehicleListing>();
-        internal static VehicleCreator m_VehicleCreator;
 
         public LinkedList<string> GetRegistrationNumbersList(VehicleListing.eVehicleStatus? i_StatusToFilterBy = null)
         {
@@ -23,13 +22,13 @@ namespace Ex03.GarageLogic
             return registrationNumbersList;
         }
 
-        private VehicleListing getListingToChange(string i_RegistrationNumber)
+        public VehicleListing GetListing(string i_RegistrationNumber)
         {
             VehicleListing listingToReturn;
             bool vehicleInCollection = r_VehiclesListings.TryGetValue(i_RegistrationNumber, out listingToReturn);
             if (!vehicleInCollection)
             {
-                throw new KeyNotFoundException();
+                throw new KeyNotFoundException("There is no Vehicle in the garage with the given Registration number");
             }
             
             return listingToReturn;
@@ -37,7 +36,7 @@ namespace Ex03.GarageLogic
 
         public void ChangeVehicleState(string i_RegistrationNumber, VehicleListing.eVehicleStatus i_NewStatus)
         {
-            VehicleListing listingToChange = getListingToChange(i_RegistrationNumber);
+            VehicleListing listingToChange = this.GetListing(i_RegistrationNumber);
             listingToChange.VehicleStatus = i_NewStatus;
         }
 
@@ -57,10 +56,9 @@ namespace Ex03.GarageLogic
             return vehicleAlreadyInSystem;
         }
 
-
         public void FillTiresOfAVehicleToMax(string i_RegistrationNumber)
         {
-            VehicleListing listingToFillTiresIn = getListingToChange(i_RegistrationNumber);
+            VehicleListing listingToFillTiresIn = this.GetListing(i_RegistrationNumber);
             listingToFillTiresIn.VehicleInfo.FillTiresToMax();
         }
 
@@ -69,21 +67,19 @@ namespace Ex03.GarageLogic
             FuelEnergySource.eFuelType i_FuelType,
             float i_FuelLitersToAdd)
         {
-            EnergySource energySource = getListingToChange(i_RegistrationNumber).VehicleInfo.EnergySource;
+            EnergySource energySource = this.GetListing(i_RegistrationNumber).VehicleInfo.EnergySource;
             FuelEnergySource fuelEnergySource = energySource as FuelEnergySource;
             if (fuelEnergySource == null)
             {
                 throw new ArgumentException("The requested vehicle's energy source is not fuel-based!");
             }
-            else
-            {
-                fuelEnergySource.FillFuelTank(i_FuelType, i_FuelLitersToAdd);
-            }
+            
+            fuelEnergySource.FillFuelTank(i_FuelType, i_FuelLitersToAdd);
         }
 
         public void ChargeElectricalVehicle(string i_RegistrationNumber, int i_NumberOfMinutesToCharge)
         {
-            EnergySource energySource = getListingToChange(i_RegistrationNumber).VehicleInfo.EnergySource;
+            EnergySource energySource = this.GetListing(i_RegistrationNumber).VehicleInfo.EnergySource;
             ElectricalEnergySource electricalEnergySource = energySource as ElectricalEnergySource;
             if (electricalEnergySource == null)
             {
@@ -93,6 +89,6 @@ namespace Ex03.GarageLogic
             {
                 electricalEnergySource.FillBattery(i_NumberOfMinutesToCharge);
             }
-        }
+        }       
     }
 }

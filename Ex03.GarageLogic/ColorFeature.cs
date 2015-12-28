@@ -17,7 +17,7 @@ namespace Ex03.GarageLogic
         public ColorFeature()
         {
             m_Description = "Color";
-            m_PossibleValues = "{Red/Blue/Black/White}";
+            this.m_PossibleValues = "{Red/Blue/Black/White}";
         }
 
         public override void SetValue(string i_ValueStr)

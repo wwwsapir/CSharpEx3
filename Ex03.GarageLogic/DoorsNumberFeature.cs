@@ -17,7 +17,7 @@ namespace Ex03.GarageLogic
         public DoorsNumberFeature()
         {
             m_Description = "Doors Number";
-            m_PossibleValues = "{Two/Three/Four/Five}";
+            this.m_PossibleValues = "{Two/Three/Four/Five}";
         }
 
         public override void SetValue(string i_ValueStr)

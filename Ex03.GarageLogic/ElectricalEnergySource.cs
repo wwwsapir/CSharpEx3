@@ -2,49 +2,51 @@
 {
     public sealed class ElectricalEnergySource : EnergySource
     {
-        private const float k_MaxPossibleBatteryHoursForAllBatteries = 500;
-
-        float m_BatteryHoursLeft;
-        float m_MaxBatteryHours;
+        private readonly float r_MaxBatteryHours;
+        private float m_BatteryHoursLeft;
 
         public float BatteryHoursLeft
         {
             get { return m_BatteryHoursLeft; }
-        }
 
-        public float MaxBatteryHours
-        {
-            get { return m_MaxBatteryHours; }
-        }
+            set
+            {
+                if (value > this.r_MaxBatteryHours)
+                {
+                    string exceptionStr = string.Format(
+                        "The given bettery time is not valid. Max time is {0} hours.",
+                        this.r_MaxBatteryHours);
+                    throw new ValueOutOfRangeException(exceptionStr);
+                }
 
-        public void FillBatteryData(float i_MaxBatteryHours, float i_BatteryHoursLeft)
-        {
-            if (i_MaxBatteryHours > k_MaxPossibleBatteryHoursForAllBatteries)
-            {
-                string exceptionStr = string.Format(
-                    "The max bettery time is not valid. Max time is {0} hours.",
-                    k_MaxPossibleBatteryHoursForAllBatteries);
-                throw new ValueOutOfRangeException(exceptionStr);
-            }
-            else if (i_MaxBatteryHours <= 0 || i_BatteryHoursLeft < 0)
-            {
-                throw new ValueOutOfRangeException("At least one of the values is too small.");
-            }
-            else if (i_MaxBatteryHours < i_BatteryHoursLeft)
-            {
-                throw new ValueOutOfRangeException("Time to fill exceeds the max battery time.");
-            }
-            else
-            {
-                m_MaxBatteryHours = i_MaxBatteryHours;
-                m_BatteryHoursLeft = i_BatteryHoursLeft;
+                if (value < 0)
+                {
+                    throw new ValueOutOfRangeException("Hours left till battery drains cannot be negative.");
+                }
+                
+                m_BatteryHoursLeft = value;
                 UpdateEnergyPercentageLeft();
             }
         }
 
+        public float MaxBatteryHours
+        {
+            get { return this.r_MaxBatteryHours; }
+        }
+
         protected override void UpdateEnergyPercentageLeft()
         {
-            m_EnergyPercentageLeft = m_BatteryHoursLeft / m_MaxBatteryHours * 100;
+            m_EnergyPercentageLeft = m_BatteryHoursLeft / this.r_MaxBatteryHours * 100;
+        }
+
+        public ElectricalEnergySource(float i_MaxBatteryHours)
+        {
+            if (i_MaxBatteryHours <= 0)
+            {
+                throw new ValueOutOfRangeException("Max Battery hours must be positive");
+            }
+
+            this.r_MaxBatteryHours = i_MaxBatteryHours;
         }
 
         public void FillBattery(int i_MinutesToCharge)
@@ -54,18 +56,25 @@
             {
                 throw new ValueOutOfRangeException("The value has to be positive.");
             }
-            else if (m_BatteryHoursLeft + hoursToCharge > m_MaxBatteryHours)
+
+            if (m_BatteryHoursLeft + hoursToCharge > this.r_MaxBatteryHours)
             {
                 string exceptionStr = string.Format(
                     "The time to charge exceeds the max charge time for this vehicle, current max time to charge is {0} minutes.",
-                    (int)((m_MaxBatteryHours - m_BatteryHoursLeft) * 60));
+                    (int)((this.r_MaxBatteryHours - m_BatteryHoursLeft) * 60));
                 throw new ValueOutOfRangeException(exceptionStr);
             }
-            else
-            {
-                m_BatteryHoursLeft += hoursToCharge;
-                UpdateEnergyPercentageLeft();
-            }
+            
+            m_BatteryHoursLeft += hoursToCharge;
+            UpdateEnergyPercentageLeft();
+        }
+
+        public override string ToString()
+        {
+            return string.Format(
+@"Battery State: {0}%
+",
+ this.m_EnergyPercentageLeft);
         }
     }
 }

@@ -9,7 +9,7 @@ namespace Ex03.GarageLogic
         public EngineCapacityFeature()
         {
             m_Description = "Engine Capacity (in cubic centimeters)";
-            m_PossibleValues = "{ Whole number in range 1..10,000 }";
+            this.m_PossibleValues = "{ Whole number in range 1..10,000 }";
         }
 
         public override void SetValue(string i_ValueStr)
@@ -20,13 +20,12 @@ namespace Ex03.GarageLogic
             {
                 throw new FormatException();
             }
-            else
+
+            if (tempEngineCapacity < 1 || tempEngineCapacity > 10000)
             {
-                if (tempEngineCapacity < 1 || tempEngineCapacity > 10000)
-                {
-                    throw new ValueOutOfRangeException();
-                }
+                throw new ValueOutOfRangeException();
             }
+
             m_EngineCapacity = tempEngineCapacity;
         }
 

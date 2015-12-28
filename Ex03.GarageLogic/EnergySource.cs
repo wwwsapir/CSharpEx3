@@ -12,5 +12,7 @@ namespace Ex03.GarageLogic
         }
 
         protected abstract void UpdateEnergyPercentageLeft();
+
+        public new abstract string ToString();
     }
 }

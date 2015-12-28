@@ -13,14 +13,22 @@
                }
           }
 
-          public override string ToString()     // A function with an injection point
+          public string PossibleValues
           {
-              return string.Format("{0}: {1}", m_Description, Value.ToString());
+              get
+              {
+                  return this.m_PossibleValues;
+              }
           }
 
-         protected abstract object Value { get; }     // The function that fills the injection point
+          public override string ToString()     // A function with an injection point
+          {
+              return string.Format("{0}: {1}", m_Description, Value);
+          }
 
+         protected abstract object Value { get; }
+
+         // The function that fills the injection point
           public abstract void SetValue(string i_ValueStr);
-          
      }
 }
