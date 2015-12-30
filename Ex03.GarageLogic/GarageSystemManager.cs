@@ -51,20 +51,14 @@ namespace Ex03.GarageLogic
             listingToChange.VehicleStatus = i_NewStatus;
         }
 
-        public bool AddVehicleToDataBase(string i_RegistrationNumber, VehicleInfo i_VehicleInfo, OwnerInfo i_OwnerInfo)
+        public void AddVehicleToDataBase(string i_RegistrationNumber, VehicleInfo i_VehicleInfo, OwnerInfo i_OwnerInfo)
         {
-            bool vehicleAlreadyInSystem = true;
-            try
+            if (this.r_VehiclesListings.ContainsKey(i_RegistrationNumber))
             {
-                ChangeVehicleState(i_RegistrationNumber, VehicleListing.eVehicleStatus.InRepair);
+                throw new ArgumentException("Key already exists");
             }
-            catch (KeyNotFoundException)
-            {
-                r_VehiclesListings.Add(i_RegistrationNumber, new VehicleListing(i_VehicleInfo, i_OwnerInfo));
-                vehicleAlreadyInSystem = false;
-            }
-
-            return vehicleAlreadyInSystem;
+            
+            r_VehiclesListings.Add(i_RegistrationNumber, new VehicleListing(i_VehicleInfo, i_OwnerInfo));
         }
 
         public void FillTiresOfAVehicleToMax(string i_RegistrationNumber)

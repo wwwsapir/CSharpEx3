@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Ex03.ConsoleUI
 {
-    public class ConsoleUtilities
+    public static class ConsoleUtilities
     {
         private const string k_YesStr = "Y";
         private const string k_NoStr = "N";

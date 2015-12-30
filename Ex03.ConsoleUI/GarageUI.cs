@@ -1,13 +1,12 @@
 ﻿using System.Text;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Ex03.GarageLogic;
 
 namespace Ex03.ConsoleUI
 {
-    using System.Linq;
-
-    public class GarageUI
+    public sealed class GarageUI
     {
         private const bool k_OnlyIntegerAllowed = true;
         private static readonly List<string> sr_MenuListDesc = new List<string>(new[]
@@ -205,7 +204,7 @@ namespace Ex03.ConsoleUI
 
         private void getAndUpdateElectricalEnergyData(ElectricalEnergySource i_ElectricEnergySource)
         {
-            float batterHoursLeft = 0;
+            float batterHoursLeft;
             bool inputIsValid = false;
 
             while (!inputIsValid)
