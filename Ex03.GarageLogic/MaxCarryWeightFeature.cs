@@ -19,7 +19,7 @@ namespace Ex03.GarageLogic
             bool inputValid = float.TryParse(i_ValueStr, out tempMaxCarryWeight);
             if (!inputValid)
             {
-                throw new FormatException();
+                throw new FormatException("Max carry weight format given is not valid");
             }
 
             if (tempMaxCarryWeight < 0 || tempMaxCarryWeight > k_MaxCarryWeightLimit)

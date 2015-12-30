@@ -36,14 +36,6 @@
             get { return this.r_MaxBatteryHours; }
         }
 
-        public float MaxBatteryHoursToFill
-        {
-            get
-            {
-                return this.r_MaxBatteryHours - this.m_BatteryHoursLeft;
-            }
-        }
-
         protected override void UpdateEnergyPercentageLeft()
         {
             m_EnergyPercentageLeft = m_BatteryHoursLeft / this.r_MaxBatteryHours * 100;

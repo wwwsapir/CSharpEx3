@@ -143,7 +143,7 @@ namespace Ex03.ConsoleUI
 
         private string getRegistrationNumber(eInputKeyConstraints i_InputKeyConstraints)
         {
-            bool inputValid = false;
+            bool inputValid;
             string registrationNumber;
 
             do
@@ -205,24 +205,48 @@ namespace Ex03.ConsoleUI
 
         private void getAndUpdateElectricalEnergyData(ElectricalEnergySource i_ElectricEnergySource)
         {
-            string userMessage = string.Format(
-                "Please Enter Remainding Battery Hours (Max value: {0})",
-                i_ElectricEnergySource.MaxBatteryHours);
-            float batterHoursLeft =
-                (float)
-                ConsoleUtilities.GetPosNumFromUser(userMessage, !k_OnlyIntegerAllowed, (decimal)i_ElectricEnergySource.MaxBatteryHours);
-            i_ElectricEnergySource.BatteryHoursLeft = batterHoursLeft;
+            float batterHoursLeft = 0;
+            bool inputIsValid = false;
+
+            while (!inputIsValid)
+            {
+                try
+                {
+                    string userMessage = string.Format(
+                        "Please Enter Remainding Battery Hours (Max value: {0})",
+                        i_ElectricEnergySource.MaxBatteryHours);
+                    batterHoursLeft = (float)ConsoleUtilities.GetPosNumFromUser(userMessage, !k_OnlyIntegerAllowed);
+                    i_ElectricEnergySource.BatteryHoursLeft = batterHoursLeft;
+                    inputIsValid = true;
+                }
+                catch (Exception exception)
+                {
+                    ConsoleUtilities.ShowBadInputMessage(exception.Message);
+                }
+            }
         }
 
         private void getAndUpdateFuelEnergyData(FuelEnergySource i_FuelEnergySource)
         {
-            string userMessage = string.Format(
-                "Please Enter Remainding Fuel Liters(Max value: {0})",
-                i_FuelEnergySource.MaxFuelLitersAmount);
-            float fuelLiterAmount =
-                (float)
-                ConsoleUtilities.GetPosNumFromUser(userMessage, !k_OnlyIntegerAllowed, (decimal)i_FuelEnergySource.MaxFuelLitersAmount);
-            i_FuelEnergySource.CurrFuelLitersAmount = fuelLiterAmount;
+            float fuelLiterAmount;
+            bool inputIsValid = false;
+            while (!inputIsValid)
+            {
+                try
+                {
+                    string userMessage = string.Format(
+                        "Please Enter Remainding Fuel Liters(Max value: {0})",
+                        i_FuelEnergySource.MaxFuelLitersAmount);
+                    fuelLiterAmount =
+                        (float)ConsoleUtilities.GetPosNumFromUser(userMessage, !k_OnlyIntegerAllowed);
+                    i_FuelEnergySource.CurrFuelLitersAmount = fuelLiterAmount;
+                    inputIsValid = true;
+                }
+                catch (Exception exception)
+                {
+                    ConsoleUtilities.ShowBadInputMessage(exception.Message);
+                }
+            }
         }
 
         private void getAndUpdateTiresInfo(VehicleInfo i_NewVehicleInfo)
@@ -233,10 +257,23 @@ namespace Ex03.ConsoleUI
             foreach (Tire tire in i_NewVehicleInfo.TiresList)
             {
                 tireIndex++;
-                userMessage = string.Format("Please Enter tire number {0}'s Manufactor Name", tireIndex);
-                tire.ManufacturerName = ConsoleUtilities.GetInputString(userMessage);
-                userMessage = string.Format("Please Enter tire number {0}'s current Air Pressure(Max value: {1})", tireIndex, tire.MaxAirPressure);
-                tire.CurrAirPressure = (float)ConsoleUtilities.GetPosNumFromUser(userMessage, !k_OnlyIntegerAllowed, (decimal)tire.MaxAirPressure);
+                bool inputIsValid = false;
+
+                while (!inputIsValid)
+                {
+                    try
+                    {
+                        userMessage = string.Format("Please Enter tire number {0}'s Manufactor Name", tireIndex);
+                        tire.ManufacturerName = ConsoleUtilities.GetInputString(userMessage);
+                        userMessage = string.Format("Please Enter tire number {0}'s current Air Pressure(Max value: {1})", tireIndex, tire.MaxAirPressure);
+                        tire.CurrAirPressure = (float)ConsoleUtilities.GetPosNumFromUser(userMessage, !k_OnlyIntegerAllowed, (decimal)tire.MaxAirPressure);
+                        inputIsValid = true;
+                    }
+                    catch (Exception exception)
+                    {
+                        ConsoleUtilities.ShowBadInputMessage(exception.Message);
+                    }
+                }
             }
         }
 
@@ -245,7 +282,7 @@ namespace Ex03.ConsoleUI
             foreach (Feature feature in i_NewVehicleInfo.FeaturesList)
             {
                 string inputFeatureValue;
-                bool inputFeatureValid = false;
+                bool inputFeatureValid;
                 string userMessage = string.Format("Please enter {0}: ", feature.Description);
 
                 do
@@ -343,6 +380,7 @@ namespace Ex03.ConsoleUI
             {
                 string registrationNumber = this.getRegistrationNumber(eInputKeyConstraints.Existing);
                 this.m_GarageSystem.FillTiresOfAVehicleToMax(registrationNumber);
+                ConsoleUtilities.PromptMessage(string.Format("All tires of vehicle ({0}) are now filled!", registrationNumber));
             }
             catch (Exception exception)
             {
@@ -352,59 +390,56 @@ namespace Ex03.ConsoleUI
 
         private void fillFuelTankOfAVehicle()
         {
-            try
+            bool actionIsDone = false;
+            string registrationNumber = this.getRegistrationNumber(eInputKeyConstraints.Existing);
+
+            while (!actionIsDone)
             {
-                string registrationNumber = this.getRegistrationNumber(eInputKeyConstraints.Existing);
-                VehicleListing vehicleListing = this.m_GarageSystem.GetListing(registrationNumber);
-                FuelEnergySource fuelEnergySource = vehicleListing.VehicleInfo.EnergySource as FuelEnergySource;
-                FuelEnergySource.eFuelType fuelTypeToFill;
-                bool fuelTypeIsValid;
-
-                if (fuelEnergySource == null)
+                try
                 {
-                    throw new ArgumentException("The requested vehicle's energy source is not fuel-based!");
+                    FuelEnergySource.eFuelType fuelTypeToFill = this.getFuelType();
+                    string userMessage = "Please Enter the Amount of Litters to Fill ";
+                    float fuelAmountToFill =
+                        (float)ConsoleUtilities.GetPosNumFromUser(userMessage, !k_OnlyIntegerAllowed);
+                    this.m_GarageSystem.FillFuelTankOfAVehicle(registrationNumber, fuelTypeToFill, fuelAmountToFill);
+                    actionIsDone = true;
                 }
-
-                do
+                catch (ValueOutOfRangeException valueOutOfRangeException)
                 {
-                    fuelTypeToFill = this.getFuelType();
-                    fuelTypeIsValid = fuelTypeToFill == fuelEnergySource.FuelType;
+                    ConsoleUtilities.ShowBadInputMessage(valueOutOfRangeException.Message);
                 }
-                while (!fuelTypeIsValid);
-
-                string userMessage = string.Format(
-                    "Please Enter the Amount of Litters to Fill (Max value: {0})",
-                    fuelEnergySource.MaxFuelLitersAmountToFill);
-                float fuelAmountToFill = (float)ConsoleUtilities.GetPosNumFromUser(userMessage, !k_OnlyIntegerAllowed, (decimal)fuelEnergySource.MaxFuelLitersAmountToFill);
-                this.m_GarageSystem.FillFuelTankOfAVehicle(registrationNumber, fuelTypeToFill, fuelAmountToFill);
-            }
-            catch (Exception exception)
-            {
-                ConsoleUtilities.PromptMessage("Failed to fill fuel tank. Info: " + exception.Message);   
+                catch (ArgumentException argumentException)
+                {
+                    ConsoleUtilities.ShowBadInputMessage(argumentException.Message);
+                    actionIsDone = true;
+                }
             }
         }
 
         private void chargeElectricalVehicle()
         {
-            try
-            {
-                string registrationNumber = this.getRegistrationNumber(eInputKeyConstraints.Existing);
-                VehicleListing vehicleListing = this.m_GarageSystem.GetListing(registrationNumber);
-                ElectricalEnergySource electricalEnergySource = vehicleListing.VehicleInfo.EnergySource as ElectricalEnergySource;
-                if (electricalEnergySource == null)
-                {
-                    throw new ArgumentException("The requested vehicle's energy source is not electricity-based!");
-                }
+            bool actionIsDone = false;
+            string registrationNumber = this.getRegistrationNumber(eInputKeyConstraints.Existing);
 
-                string userMessage = string.Format(
-                    "Please Enter Number Of Minutes To Charge (Max value: {0})",
-                    electricalEnergySource.MaxBatteryHoursToFill);
-                int numOfMinutesToCharge = (int)ConsoleUtilities.GetPosNumFromUser(userMessage, k_OnlyIntegerAllowed, (decimal)electricalEnergySource.MaxBatteryHoursToFill);
-                this.m_GarageSystem.ChargeElectricalVehicle(registrationNumber, numOfMinutesToCharge);
-            }
-            catch (Exception exception)
+            while (!actionIsDone)
             {
-                ConsoleUtilities.PromptMessage("Failed to Charge battery. Info: " + exception.Message);   
+                try
+                {
+                    string userMessage = "Please Enter Number Of Minutes To Charge";
+                    int numOfMinutesToCharge =
+                        (int)ConsoleUtilities.GetPosNumFromUser(userMessage, k_OnlyIntegerAllowed);
+                    this.m_GarageSystem.ChargeElectricalVehicle(registrationNumber, numOfMinutesToCharge);
+                    actionIsDone = true;
+                }
+                catch (ValueOutOfRangeException valueOutOfRangeException)
+                {
+                    ConsoleUtilities.ShowBadInputMessage(valueOutOfRangeException.Message);
+                }
+                catch (ArgumentException argumentException)
+                {
+                    ConsoleUtilities.ShowBadInputMessage(argumentException.Message);
+                    actionIsDone = true;
+                }
             }
         }
 

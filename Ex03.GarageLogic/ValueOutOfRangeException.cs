@@ -16,14 +16,6 @@ namespace Ex03.GarageLogic
             this.r_MaxValue = i_MaxValue;
         }
 
-        public ValueOutOfRangeException(float i_OutOfRangeValue, float i_MinValue, float i_MaxValue)
-            : base("ValueOutOfRange")
-        {
-            this.r_OutOfRangeValue = i_OutOfRangeValue;
-            this.r_MinValue = i_MinValue;
-            this.r_MaxValue = i_MaxValue;
-        }
-
         public float MaxValue
         {
             get

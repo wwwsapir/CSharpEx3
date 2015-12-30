@@ -27,7 +27,7 @@ namespace Ex03.GarageLogic
 
             if (!IsValid(i_ValueStr))
             {
-                throw new FormatException();
+                throw new FormatException("Doors number format is not valid");
             }
 
             Enum.TryParse(i_ValueStr, v_IgnoreCaseDifferences, out doorsNumber);

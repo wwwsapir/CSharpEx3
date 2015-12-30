@@ -26,7 +26,7 @@ namespace Ex03.GarageLogic
             const bool v_IgnoreCaseDifferences = true;
             if (!IsValid(i_ValueStr))
             {
-                throw new FormatException();
+                throw new FormatException("License type format is not valid");
             }
 
             Enum.TryParse(i_ValueStr, v_IgnoreCaseDifferences, out licenseType);

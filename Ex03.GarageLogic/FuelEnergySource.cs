@@ -54,11 +54,6 @@ namespace Ex03.GarageLogic
             get { return this.r_MaxFuelLitersAmount; }
         }
 
-        public float MaxFuelLitersAmountToFill
-        {
-            get { return this.r_MaxFuelLitersAmount - this.m_CurrFuelLitersAmount; }
-        } 
-
         public FuelEnergySource(float i_MaxFuelLitersAmount, eFuelType i_FuelType)
         {
             if (i_MaxFuelLitersAmount <= 0)

@@ -20,7 +20,7 @@ namespace Ex03.ConsoleUI
             Console.ReadKey();
             Console.Clear();
         }
-
+        
         public static bool AskUserBooleanQuestion(string i_QuestionString)
         {
             bool? resultValue = null;
@@ -101,9 +101,13 @@ namespace Ex03.ConsoleUI
                 {
                     ShowBadInputMessage("Only digits allowed");
                 }
+                else if (parsingSuccess && decimalParseRes == 0)
+                {
+                    ShowBadInputMessage("Zero value not allowed");
+                }
                 else if (parsingSuccess && !parseResInRange)
                 {
-                    string userMessage = string.Format("Input Out Of Range. Valid Range: (0,{0}]", i_MaxValue);
+                    string userMessage = string.Format("Input Out Of Range. Max value: {0}", i_MaxValue);
                     ShowBadInputMessage(userMessage);
                 }
             }
@@ -137,15 +141,19 @@ namespace Ex03.ConsoleUI
             }
 
             showListingChoices(i_ValuesDesc);
-            
-            int choice = (int)GetPosNumFromUser("Please choose one of the above", k_OnlyIntegerAllowed);
-            bool choiceValid = Enum.IsDefined(i_EnumType, choice - 1);
-            while (!choiceValid)
+            int choice;
+            bool choiceValid;
+            do
             {
-                ShowBadInputMessage("Invalid choice");
                 choice = (int)GetPosNumFromUser("Please choose one of the above", k_OnlyIntegerAllowed);
                 choiceValid = Enum.IsDefined(i_EnumType, choice - 1);
+
+                if (!choiceValid)
+                {
+                    ShowBadInputMessage("Invalid choice");
+                }
             }
+            while (!choiceValid);
 
             return choice - 1;
         }
