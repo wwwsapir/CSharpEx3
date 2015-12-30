@@ -39,7 +39,19 @@ namespace Ex03.GarageLogic
 
         protected override object Value
         {
-            get { return m_ContainsDangeroudComponents; }
+            get
+            {
+                string toReturn;
+                if (m_ContainsDangeroudComponents == true)
+                {
+                    toReturn = "yes";
+                }
+                else   // m_ContainsDangeroudComponents == false
+                {
+                    toReturn = "no";
+                }
+                return toReturn;
+            }
         }
     }
 }
