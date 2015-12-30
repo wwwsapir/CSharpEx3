@@ -2,6 +2,7 @@
 
 namespace Ex03.GarageLogic
 {
+    using System;
     using System.Text;
 
     public class VehicleInfo
@@ -64,14 +65,17 @@ namespace Ex03.GarageLogic
         {
             StringBuilder tiresInfo = new StringBuilder();
             StringBuilder featuresInfo = new StringBuilder();
+            byte tireIndex = 0;
+
             foreach (Tire tire in this.m_TiresList)
             {
-                tiresInfo.Append(tire.ToString());
+                tireIndex++;
+                tiresInfo.Append(string.Format(@"Tire number {0}: {1}{2}", tireIndex, tire, Environment.NewLine));
             }
 
             foreach (Feature feature in this.m_FeaturesList)
             {
-                featuresInfo.Append(feature.ToString());
+                featuresInfo.Append(feature + Environment.NewLine);
             }
 
             return string.Format(
@@ -79,8 +83,11 @@ namespace Ex03.GarageLogic
 Vehicle Type: {0}
 Model Name: {1}
 EnergySource: {2}
-Tires Info {3}
-Extra Information {4}",
+Tires Info:
+{3}
+Extra Information:
+{4}
+",
                    VehicleCreator.VehicleTypesDesc[(int)this.r_VehicleType],
                    this.m_ModelName,
                    this.m_EnergySource.ToString(),

@@ -4,6 +4,7 @@ namespace Ex03.GarageLogic
 {
     public sealed class MaxCarryWeightFeature : Feature
     {
+        private const float k_MaxCarryWeightLimit = 100;
         private float m_MaxCarryWeight;
 
         public MaxCarryWeightFeature()
@@ -20,14 +21,22 @@ namespace Ex03.GarageLogic
             {
                 throw new FormatException();
             }
-            else
+
+            if (tempMaxCarryWeight < 0 || tempMaxCarryWeight > k_MaxCarryWeightLimit)
             {
-                if (tempMaxCarryWeight < 0 || tempMaxCarryWeight > 100)
-                {
-                    throw new ValueOutOfRangeException();
-                }
+                throw new ValueOutOfRangeException("Given Value For Max Carry Weight Out Of Range", tempMaxCarryWeight, 0, k_MaxCarryWeightLimit);
             }
+            
             m_MaxCarryWeight = tempMaxCarryWeight;
+        }
+
+        public override bool IsValid(string i_InputFeatureValue)
+        {
+            float tempMaxCarryWeight;
+            bool inputValid = float.TryParse(i_InputFeatureValue, out tempMaxCarryWeight);
+            inputValid &= tempMaxCarryWeight >= 0 || tempMaxCarryWeight <= k_MaxCarryWeightLimit;
+
+            return inputValid;
         }
 
         protected override object Value

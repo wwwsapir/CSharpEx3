@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.Collections.Generic;
 
 namespace Ex03.GarageLogic
 {
@@ -9,6 +7,14 @@ namespace Ex03.GarageLogic
         private static readonly List<byte> sr_NumOfTires = new List<byte>() { 2, 2, 4, 4, 12 };
         private static readonly List<byte> sr_NumOfFeatures = new List<byte>() { 2, 2, 2, 2, 2 };
         private static readonly List<float> sr_MaxAirPressure = new List<float>() { 32, 32, 29, 29, 34 };
+        private static readonly List<string> sr_VehicleTypesDesc = new List<string>(new[]
+        {
+            "Motorcycle",
+            "Electrical MotorCycle",
+            "Car",
+            "Electrical Car",
+            "Truck"
+        });
 
         public enum eVehicleType
         {
@@ -18,15 +24,6 @@ namespace Ex03.GarageLogic
             ElectricalCar,
             Truck
         }
-
-        private static readonly List<string> sr_VehicleTypesDesc = new List<string>(new[]
-        {
-            "Motorcycle",
-            "Electrical MotorCycle",
-            "Car",
-            "Electrical Car",
-            "Truck"
-        });
 
         public static List<string> VehicleTypesDesc
         {
@@ -63,7 +60,7 @@ namespace Ex03.GarageLogic
                     createTruck(vehicleInfo);
                     break;
                 default:
-                    throw new InvalidEnumArgumentException("i_VehicleType", (int)i_VehicleType, typeof(eVehicleType));
+                    throw new ValueOutOfRangeException("Enum value does not Exists", (float)i_VehicleType, 0, (float)GarageSystemManager.GetHighestValueForEnum<eVehicleType>());
             }
 
             return vehicleInfo;
@@ -125,27 +122,6 @@ namespace Ex03.GarageLogic
             {
                 i_VehicleInfo.TiresList.Add(new Tire(i_MaxAirPressure));
             }
-        }
-
-        public static eVehicleType ParseVehicleType(string i_VehicleType)
-        {
-            eVehicleType? parseVehicleTypeResult = null;
-            i_VehicleType = i_VehicleType.Trim();
-
-            for (int i = 0; i < sr_VehicleTypesDesc.Count; i++)
-            {
-                if (string.Equals(sr_VehicleTypesDesc[i], i_VehicleType, StringComparison.CurrentCultureIgnoreCase))
-                {
-                    parseVehicleTypeResult = (eVehicleType)i;
-                }
-            }
-
-            if (parseVehicleTypeResult == null)
-            {
-                throw new FormatException("Parsing vehicle type failed");
-            }
-
-            return parseVehicleTypeResult.Value;
         }
     }
 }

@@ -22,12 +22,26 @@ namespace Ex03.GarageLogic
 
         public override void SetValue(string i_ValueStr)
         {
+            eColor color;
             const bool v_IgnoreCaseDifferences = true;
-            bool inputValid = Enum.TryParse(i_ValueStr, v_IgnoreCaseDifferences, out m_Color);
-            if (!inputValid)
+            if (!IsValid(i_ValueStr))
             {
                 throw new FormatException();
             }
+
+            Enum.TryParse(i_ValueStr, v_IgnoreCaseDifferences, out color);
+            this.m_Color = color;
+        }
+
+        public override bool IsValid(string i_InputFeatureValue)
+        {
+            const bool v_IgnoreCaseDifferences = true;
+            eColor dummyColor;
+            int dummyInt;
+            bool parseSuccess = Enum.TryParse(i_InputFeatureValue, v_IgnoreCaseDifferences, out dummyColor);
+            bool isNumber = int.TryParse(i_InputFeatureValue, out dummyInt);
+
+            return parseSuccess && !isNumber;
         }
 
         protected override object Value

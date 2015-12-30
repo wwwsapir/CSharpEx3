@@ -30,5 +30,7 @@
 
          // The function that fills the injection point
           public abstract void SetValue(string i_ValueStr);
+
+         public abstract bool IsValid(string i_InputFeatureValue);
      }
 }

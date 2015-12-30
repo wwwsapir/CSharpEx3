@@ -1,21 +1,12 @@
-﻿using System;
-
-namespace Ex03.GarageLogic
+﻿namespace Ex03.GarageLogic
 {
+    using System;
+
     public sealed class VehicleListing
     {
-        private static readonly string sr_VehicleStatusPossibleValues = "{InRepair/Repaired/Paid}";
         private OwnerInfo m_OwnerInfo;
         private VehicleInfo m_VehicleInfo;
         private eVehicleStatus m_VehicleStatus;
-
-        public static string VehicleStatusPossibleValues
-        {
-            get
-            {
-                return sr_VehicleStatusPossibleValues;
-            }
-        }
 
         public eVehicleStatus VehicleStatus
         {
@@ -54,22 +45,9 @@ namespace Ex03.GarageLogic
             this.m_VehicleStatus = eVehicleStatus.InRepair;
         }
 
-        public static eVehicleStatus ParseVehicleStatus(string i_ValueStr)
-        {
-            eVehicleStatus returnedVehicleStatus;
-            const bool v_IgnoreCaseDifferences = true;
-            bool inputValid = Enum.TryParse(i_ValueStr, v_IgnoreCaseDifferences, out returnedVehicleStatus);
-            if (!inputValid)
-            {
-                throw new FormatException();
-            }
-
-            return returnedVehicleStatus;
-        }
-
         public override string ToString()
         {
-            return this.m_OwnerInfo.ToString() + this.m_VehicleInfo.ToString() + " Vehicle State: " + this.m_VehicleStatus.ToString("G");
+            return string.Format("{0}{1}Vehicle State: {2}{3}", this.m_OwnerInfo, this.m_VehicleInfo, this.m_VehicleStatus, Environment.NewLine);
         }
     }
 }

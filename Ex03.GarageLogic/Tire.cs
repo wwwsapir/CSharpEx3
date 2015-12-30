@@ -20,14 +20,14 @@
                   if (value > this.r_MaxAirPressure)
                   {
                       string exceptionStr = string.Format(
-                          "The given Air Pressure is not valid. Max time is {0} hours.",
-                          this.r_MaxAirPressure);
-                      throw new ValueOutOfRangeException(exceptionStr);
+                         "The given Air Pressure is not valid. Max time is {0} hours.",
+                         this.r_MaxAirPressure);
+                      throw new ValueOutOfRangeException(exceptionStr, value, 0, this.r_MaxAirPressure);
                   }
 
                   if (value < 0)
                   {
-                      throw new ValueOutOfRangeException("Air Pressure cannot be negative.");
+                      throw new ValueOutOfRangeException("Air Pressure cannot be negative.", value, 0, this.r_MaxAirPressure);
                   }
 
                   this.m_CurrAirPressure = value;
@@ -48,7 +48,7 @@
          {
               if (this.m_CurrAirPressure + i_AirPressureToAdd > this.r_MaxAirPressure)
               {
-                  throw new ValueOutOfRangeException("Air pressure Inflation exceeds limit");
+                  throw new ValueOutOfRangeException("Air pressure Inflation exceeds limit", i_AirPressureToAdd, 0, this.r_MaxAirPressure - this.m_CurrAirPressure);
               }
 
               this.m_CurrAirPressure += i_AirPressureToAdd;
@@ -57,10 +57,7 @@
           public override string ToString()
           {
                return string.Format(
-@"
-Manufacturer: {0}
-Current Air Pressure: {1}
-Max Air Pressure: {2}",
+@"Manufacturer: {0} Current Air Pressure: {1} Max Air Pressure: {2}",
                       m_ManufacturerName,
                       m_CurrAirPressure,
                       r_MaxAirPressure);

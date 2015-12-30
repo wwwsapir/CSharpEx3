@@ -4,7 +4,6 @@ namespace Ex03.GarageLogic
 {
     public sealed class FuelEnergySource : EnergySource
     {
-        private static readonly string sr_FuelTypePossibleValues = "{Soler/Octan95/Octan96/Octan98}";
         private readonly float r_MaxFuelLitersAmount;
         private eFuelType m_FuelType;
         private float m_CurrFuelLitersAmount;
@@ -15,14 +14,6 @@ namespace Ex03.GarageLogic
             Octan95,
             Octan96,
             Octan98
-        }
-
-        public static string FuelTypePossibleValues
-        {
-            get
-            {
-                return sr_FuelTypePossibleValues;
-            }
         }
 
         public eFuelType FuelType
@@ -45,12 +36,12 @@ namespace Ex03.GarageLogic
                     string exceptionStr = string.Format(
                         "The given fuel amount is not valid. Max amount is {0} liters.",
                         this.r_MaxFuelLitersAmount);
-                    throw new ValueOutOfRangeException(exceptionStr);
+                    throw new ValueOutOfRangeException(exceptionStr, value, 0, MaxFuelLitersAmount);
                 }
 
                 if (value < 0)
                 {
-                    throw new ValueOutOfRangeException("Fuel amount cannot be negative");
+                    throw new ValueOutOfRangeException("Fuel amount cannot be negative", value, 0, MaxFuelLitersAmount);
                 }
                
                     m_CurrFuelLitersAmount = value;
@@ -63,11 +54,16 @@ namespace Ex03.GarageLogic
             get { return this.r_MaxFuelLitersAmount; }
         }
 
+        public float MaxFuelLitersAmountToFill
+        {
+            get { return this.r_MaxFuelLitersAmount - this.m_CurrFuelLitersAmount; }
+        } 
+
         public FuelEnergySource(float i_MaxFuelLitersAmount, eFuelType i_FuelType)
         {
             if (i_MaxFuelLitersAmount <= 0)
             {
-                throw new ValueOutOfRangeException("Max Fuels litters must be positive");
+                throw new ArgumentException("Maximum capacity for fuel must be a positive number");
             }
 
             this.r_MaxFuelLitersAmount = i_MaxFuelLitersAmount;
@@ -86,41 +82,26 @@ namespace Ex03.GarageLogic
                 throw new ArgumentException("The fuel type to fill doesn't match the vehicle's fuel type.");
             }
 
-            if (i_LitersToFill <= 0)
+            if (i_LitersToFill < 0)
             {
-                throw new ValueOutOfRangeException("The value has to be positive.");
+                throw new ValueOutOfRangeException("Fuel amount to fill tank has to be non-negative", i_LitersToFill, 0, MaxFuelLitersAmount);
             }
 
             if (m_CurrFuelLitersAmount + i_LitersToFill > this.r_MaxFuelLitersAmount)
             {
-                string exceptionStr = string.Format(
-                    "The amount of fuel exceeds the max amount for this vehicle, current max amount to fill is: {0} liters.",
-                    this.r_MaxFuelLitersAmount - m_CurrFuelLitersAmount);
-                throw new ValueOutOfRangeException(exceptionStr);
+                throw new ValueOutOfRangeException("The amount of fuel exceeds the max amount for this vehicle", i_LitersToFill, 0, this.r_MaxFuelLitersAmount - m_CurrFuelLitersAmount);
             }
             
             m_CurrFuelLitersAmount += i_LitersToFill;
             UpdateEnergyPercentageLeft();
         }
 
-        public static eFuelType ParseFuelType(string i_ValueStr)
-        {
-            eFuelType returnedVehicleStatus;
-            const bool v_IgnoreCaseDifferences = true;
-            bool inputValid = Enum.TryParse(i_ValueStr, v_IgnoreCaseDifferences, out returnedVehicleStatus);
-            if (!inputValid)
-            {
-                throw new FormatException();
-            }
-
-            return returnedVehicleStatus;
-        }
-
         public override string ToString()
         {
             return string.Format(
 @"Fuel Type: {0}
-Fuel Left: {1}%",
+Fuel Left: {1}%
+",
                 this.FuelType.ToString("G"),
                 this.m_EnergyPercentageLeft);
         }

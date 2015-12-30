@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using System.Collections.Generic;
 
 namespace Ex03.ConsoleUI
 {
@@ -9,20 +10,22 @@ namespace Ex03.ConsoleUI
         private const string k_NoStr = "N";
         private const int k_MaxNumOfDigitsInInput = 10;
         private const int k_MaxNumOfAllowedChars = 30;
+        private const bool k_OnlyIntegerAllowed = true;
 
         public static void PromptMessage(string i_Message)
         {
             Console.Clear();
             Console.WriteLine(i_Message);
-            Console.WriteLine("Press Enter key to continue");
-            Console.ReadLine();
+            Console.WriteLine("Press any key to continue..");
+            Console.ReadKey();
+            Console.Clear();
         }
 
         public static bool AskUserBooleanQuestion(string i_QuestionString)
         {
             bool? resultValue = null;
 
-            Console.WriteLine("{0}, ({1}/{2})?", i_QuestionString, k_YesStr, k_NoStr);
+            Console.WriteLine("{0}, ({1}/{2})", i_QuestionString, k_YesStr, k_NoStr);
 
             while (resultValue == null)
             {
@@ -52,19 +55,24 @@ namespace Ex03.ConsoleUI
         public static string GetInputString(string i_MessageToUser, int i_MaxNumOfAllowedChars)
         {
             Console.WriteLine(i_MessageToUser);
-            string strnextAction = Console.ReadLine();
-            strnextAction = strnextAction.Trim();
+            string inputString = Console.ReadLine();
+            inputString = inputString.Trim();
 
-            while (string.IsNullOrEmpty(strnextAction) || strnextAction.Length > i_MaxNumOfAllowedChars)
+            while (string.IsNullOrEmpty(inputString) || inputString.Length > i_MaxNumOfAllowedChars)
             {
                 ShowBadInputMessage("Empty Input is not allowed");
-                strnextAction = Console.ReadLine();
+                inputString = Console.ReadLine();
             }
 
-            return strnextAction;
+            return inputString;
         }
 
         public static decimal GetPosNumFromUser(string i_MessageToUser, bool i_OnlyInteger)
+        {
+            return GetPosNumFromUser(i_MessageToUser, i_OnlyInteger, decimal.MaxValue);
+        }
+
+        public static decimal GetPosNumFromUser(string i_MessageToUser, bool i_OnlyInteger, decimal i_MaxValue)
         {
             decimal decimalParseRes;
             NumberStyles style;
@@ -78,21 +86,82 @@ namespace Ex03.ConsoleUI
                 style = NumberStyles.AllowDecimalPoint;
             }
 
-            string strnextAction = GetInputString(i_MessageToUser, k_MaxNumOfDigitsInInput);
-            bool inputIsValid = decimal.TryParse(strnextAction, style, CultureInfo.CurrentCulture, out decimalParseRes) && decimalParseRes > 0;     // Checking if a positive valid number entered
-            while (!inputIsValid)
+            string inputString;
+            bool parsingSuccess;
+            bool parseResInRange;
+            bool inputIsValid;
+            do
             {
-                ShowBadInputMessage("Input may only contains digits(zero value is not allowed) try again..");
-                strnextAction = GetInputString(i_MessageToUser, k_MaxNumOfDigitsInInput);
-                inputIsValid = decimal.TryParse(strnextAction, style, CultureInfo.CurrentCulture, out decimalParseRes) && decimalParseRes > 0;     // Checking if a positive valid number entered
+                inputString = GetInputString(i_MessageToUser, k_MaxNumOfDigitsInInput);
+                parsingSuccess = decimal.TryParse(inputString, style, CultureInfo.CurrentCulture, out decimalParseRes);
+                parseResInRange = decimalParseRes > 0 && decimalParseRes <= i_MaxValue;
+                inputIsValid = parsingSuccess && parseResInRange;
+
+                if (!parsingSuccess)
+                {
+                    ShowBadInputMessage("Only digits allowed");
+                }
+                else if (parsingSuccess && !parseResInRange)
+                {
+                    string userMessage = string.Format("Input Out Of Range. Valid Range: (0,{0}]", i_MaxValue);
+                    ShowBadInputMessage(userMessage);
+                }
             }
+            while (!inputIsValid);
 
             return decimalParseRes;
         }
 
         public static void ShowBadInputMessage(string i_Reason)
         {
-            Console.WriteLine("Input is not valid; " + i_Reason);
+            Console.WriteLine("Input Error; " + i_Reason);
+        }
+
+        public static int ChooseEnumValue(Type i_EnumType)
+        {
+            List<string> valuesDesc = new List<string>();
+
+            foreach (object enumValue in Enum.GetValues(i_EnumType))
+            {
+                valuesDesc.Add(enumValue.ToString());
+            }
+
+            return ChooseEnumValue(i_EnumType, valuesDesc);
+        }
+
+        public static int ChooseEnumValue(Type i_EnumType, List<string> i_ValuesDesc)
+        {
+            if (i_ValuesDesc == null)
+            {
+                throw new ArgumentNullException("i_ValuesDesc");
+            }
+
+            showListingChoices(i_ValuesDesc);
+            
+            int choice = (int)GetPosNumFromUser("Please choose one of the above", k_OnlyIntegerAllowed);
+            bool choiceValid = Enum.IsDefined(i_EnumType, choice - 1);
+            while (!choiceValid)
+            {
+                ShowBadInputMessage("Invalid choice");
+                choice = (int)GetPosNumFromUser("Please choose one of the above", k_OnlyIntegerAllowed);
+                choiceValid = Enum.IsDefined(i_EnumType, choice - 1);
+            }
+
+            return choice - 1;
+        }
+
+        private static void showListingChoices(List<string> i_ValuesDesc)
+        {
+            string userMessage = string.Empty;
+            byte listCounter = 0;
+
+            foreach (string valueDesc in i_ValuesDesc)
+            {
+                listCounter++;
+                userMessage += listCounter + " : " + valueDesc + Environment.NewLine;
+            }
+
+            Console.Write(userMessage);
         }
     }
 }

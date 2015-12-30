@@ -14,8 +14,12 @@ namespace Ex03.GarageLogic
 
         public override void SetValue(string i_ValueStr)
         {
-            i_ValueStr = i_ValueStr.Trim();
+            if (!IsValid(i_ValueStr))
+            {
+                throw new FormatException();
+            }
 
+            i_ValueStr = i_ValueStr.ToLower().Trim();
             if (i_ValueStr.ToLower() == "yes")
             {
                 m_ContainsDangeroudComponents = true;
@@ -24,10 +28,13 @@ namespace Ex03.GarageLogic
             {
                 m_ContainsDangeroudComponents = false;
             }
-            else
-            {
-                throw new FormatException();
-            }
+        }
+
+        public override bool IsValid(string i_InputFeatureValue)
+        {
+            string formattedInput = i_InputFeatureValue.ToLower().Trim();
+
+            return formattedInput == "yes" || formattedInput == "no";
         }
 
         protected override object Value

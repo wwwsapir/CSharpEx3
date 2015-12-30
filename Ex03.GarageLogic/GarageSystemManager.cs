@@ -1,11 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Ex03.GarageLogic
 {
     public sealed class GarageSystemManager
     {
         private readonly Dictionary<string, VehicleListing> r_VehiclesListings = new Dictionary<string, VehicleListing>();
+
+        public static TEnum GetHighestValueForEnum<TEnum>()
+        {
+            return Enum.GetValues(typeof(TEnum)).Cast<TEnum>().Max();
+        }
 
         public LinkedList<string> GetRegistrationNumbersList(VehicleListing.eVehicleStatus? i_StatusToFilterBy = null)
         {
@@ -20,6 +26,11 @@ namespace Ex03.GarageLogic
             }
 
             return registrationNumbersList;
+        }
+
+        public bool IsRegistartionNumberExists(string i_RegistrationNumber)
+        {
+            return this.r_VehiclesListings.ContainsKey(i_RegistrationNumber);
         }
 
         public VehicleListing GetListing(string i_RegistrationNumber)
