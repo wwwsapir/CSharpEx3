@@ -1,6 +1,6 @@
 ﻿namespace Ex03.GarageLogic
 {
-     public abstract class Feature
+     public abstract class Feature  //This is a class that will be used the same for different types of values
      {
           protected string m_Description;
           protected string m_PossibleValues;

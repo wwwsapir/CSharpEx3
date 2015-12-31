@@ -15,7 +15,7 @@
           public float CurrAirPressure
           {
               get { return m_CurrAirPressure; }
-              set
+              set  //The current air pressure is set only if it's a legal value
               {
                   if (value > this.r_MaxAirPressure)
                   {
@@ -42,16 +42,6 @@
           public Tire(float i_MaxAirPressure)
           {
                r_MaxAirPressure = i_MaxAirPressure;
-          }
-
-         public void InflateTire(float i_AirPressureToAdd)
-         {
-              if (this.m_CurrAirPressure + i_AirPressureToAdd > this.r_MaxAirPressure)
-              {
-                  throw new ValueOutOfRangeException("Air pressure Inflation exceeds limit", i_AirPressureToAdd, 0, this.r_MaxAirPressure - this.m_CurrAirPressure);
-              }
-
-              this.m_CurrAirPressure += i_AirPressureToAdd;
           }
 
           public override string ToString()

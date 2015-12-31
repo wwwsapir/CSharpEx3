@@ -20,12 +20,12 @@ namespace Ex03.GarageLogic
             m_FeaturesList = new List<Feature>(i_NumOfFeatures);
         }
 
+        //Brings air pressure to max in tires
         public void FillTiresToMax()
         {
             foreach (Tire tire in m_TiresList)
             {
-                float airAmountToReachMax = tire.MaxAirPressure - tire.CurrAirPressure;
-                tire.InflateTire(airAmountToReachMax);
+                tire.CurrAirPressure = tire.MaxAirPressure;
             }
         }
 

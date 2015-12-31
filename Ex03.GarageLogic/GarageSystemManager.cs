@@ -28,11 +28,13 @@ namespace Ex03.GarageLogic
             return registrationNumbersList;
         }
 
+        //Checks if a car with the given registration number exists in the dictionary
         public bool IsRegistartionNumberExists(string i_RegistrationNumber)
         {
             return this.r_VehiclesListings.ContainsKey(i_RegistrationNumber);
         }
 
+        //Returns a listing from the dictionary with the registration number as a key
         public VehicleListing GetListing(string i_RegistrationNumber)
         {
             VehicleListing listingToReturn;
@@ -45,6 +47,7 @@ namespace Ex03.GarageLogic
             return listingToReturn;
         }
 
+        //Changes the vehicle status (In repaire, repaired, paid)
         public void ChangeVehicleState(string i_RegistrationNumber, VehicleListing.eVehicleStatus i_NewStatus)
         {
             VehicleListing listingToChange = this.GetListing(i_RegistrationNumber);
