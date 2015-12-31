@@ -40,6 +40,7 @@ namespace Ex03.ConsoleUI
         {
             New,
             Existing,
+            NoConstraints
         }
 
         public void StartGarageManagementProgram()
@@ -93,17 +94,30 @@ namespace Ex03.ConsoleUI
 
         private void addVehicleToSystem()
         {
-            string newRegistrationNumber;
+            string inputRegistrationNumber;
             OwnerInfo newOwnerInfo;
             VehicleInfo newVehicleInfo;
 
             try
             {
-                newVehicleInfo = getNewVehicleInfo();
-                newRegistrationNumber = this.getRegistrationNumber(eInputKeyConstraints.New);
-                newOwnerInfo = getNewOwnerInfo();
-                updateVehicleExtraInfo(newVehicleInfo);
-                this.m_GarageSystem.AddVehicleToDataBase(newRegistrationNumber, newVehicleInfo, newOwnerInfo);
+                inputRegistrationNumber = this.getRegistrationNumber(eInputKeyConstraints.NoConstraints);
+                if (this.m_GarageSystem.IsRegistartionNumberExists(inputRegistrationNumber))
+                {
+                    // If vehicle already is in the system then updating only basic info regarding tires and energy source
+                    VehicleListing existingVehicleListing = this.m_GarageSystem.GetListing(inputRegistrationNumber);
+                    existingVehicleListing.VehicleStatus = VehicleListing.eVehicleStatus.InRepair;
+                    getAndUpdateTiresInfo(existingVehicleListing.VehicleInfo);
+                    getAndUpdateEnergySourceInfo(existingVehicleListing.VehicleInfo);
+                }
+                else
+                {
+                    // Creating new vehicle from scratch
+                    newVehicleInfo = getNewVehicleInfo();
+                    newOwnerInfo = getNewOwnerInfo();
+                    updateVehicleExtraInfo(newVehicleInfo);
+                    m_GarageSystem.AddVehicleToDataBase(inputRegistrationNumber, newVehicleInfo, newOwnerInfo);
+                    ConsoleUtilities.PromptMessage(string.Format("vehicle ({0}) added successfully!", inputRegistrationNumber));
+                }
             }
             catch (Exception exception)
             {  
@@ -124,6 +138,7 @@ namespace Ex03.ConsoleUI
             return newOwnerInfo;
         }
 
+        // Instantiating new VehicleInfo object, filling in the most basic known data using vehicleCreator class
         private VehicleInfo getNewVehicleInfo()
         {
             int userChoice = ConsoleUtilities.ChooseEnumValue(typeof(VehicleCreator.eVehicleType), VehicleCreator.VehicleTypesDesc);
@@ -131,6 +146,7 @@ namespace Ex03.ConsoleUI
             return VehicleCreator.CreateVehicle((VehicleCreator.eVehicleType)userChoice);
         }
 
+        // Getting reg. number, then  formatted as upper case and without spaces
         private string getRegistrationNumber()
         {
             string rawRegistartionNumber =
@@ -140,6 +156,7 @@ namespace Ex03.ConsoleUI
             return formattedRegNum;
         }
 
+        // getting registration number with certain constraints regarding the number
         private string getRegistrationNumber(eInputKeyConstraints i_InputKeyConstraints)
         {
             bool inputValid;
@@ -166,6 +183,9 @@ namespace Ex03.ConsoleUI
                         }
 
                         break;
+                    case eInputKeyConstraints.NoConstraints:
+                        inputValid = true;
+                        break;
                     default:
                         throw new ValueOutOfRangeException("Enum value does not Exists", (float)i_InputKeyConstraints, 0, (float)GarageSystemManager.GetHighestValueForEnum<eInputKeyConstraints>());
                 }
@@ -175,6 +195,7 @@ namespace Ex03.ConsoleUI
             return registrationNumber;
         }
 
+        // filling Vehicle info from user
         private void updateVehicleExtraInfo(VehicleInfo i_NewVehicleInfo)
         {
                 i_NewVehicleInfo.ModelName = ConsoleUtilities.GetInputString("Enter Model Name");
@@ -183,6 +204,7 @@ namespace Ex03.ConsoleUI
                 getAndUpdateFeaturesInfo(i_NewVehicleInfo);
         }
 
+        // Checking exact type of EnergySource and acts accordingly
         private void getAndUpdateEnergySourceInfo(VehicleInfo i_NewVehicleInfo)
         {
             FuelEnergySource fuelEnergySource = i_NewVehicleInfo.EnergySource as FuelEnergySource;
@@ -214,7 +236,7 @@ namespace Ex03.ConsoleUI
                     string userMessage = string.Format(
                         "Please Enter Remainding Battery Hours (Max value: {0})",
                         i_ElectricEnergySource.MaxBatteryHours);
-                    batterHoursLeft = (float)ConsoleUtilities.GetPosNumFromUser(userMessage, !k_OnlyIntegerAllowed);
+                    batterHoursLeft = (float)ConsoleUtilities.GetNonNegativeNumFromUser(userMessage, !k_OnlyIntegerAllowed);
                     i_ElectricEnergySource.BatteryHoursLeft = batterHoursLeft;
                     inputIsValid = true;
                 }
@@ -237,7 +259,7 @@ namespace Ex03.ConsoleUI
                         "Please Enter Remainding Fuel Liters(Max value: {0})",
                         i_FuelEnergySource.MaxFuelLitersAmount);
                     fuelLiterAmount =
-                        (float)ConsoleUtilities.GetPosNumFromUser(userMessage, !k_OnlyIntegerAllowed);
+                        (float)ConsoleUtilities.GetNonNegativeNumFromUser(userMessage, !k_OnlyIntegerAllowed);
                     i_FuelEnergySource.CurrFuelLitersAmount = fuelLiterAmount;
                     inputIsValid = true;
                 }
@@ -253,6 +275,7 @@ namespace Ex03.ConsoleUI
             int tireIndex = 0;
             string userMessage;
 
+            // Here we assume that all tires have been created already
             foreach (Tire tire in i_NewVehicleInfo.TiresList)
             {
                 tireIndex++;
@@ -265,7 +288,7 @@ namespace Ex03.ConsoleUI
                         userMessage = string.Format("Please Enter tire number {0}'s Manufactor Name", tireIndex);
                         tire.ManufacturerName = ConsoleUtilities.GetInputString(userMessage);
                         userMessage = string.Format("Please Enter tire number {0}'s current Air Pressure(Max value: {1})", tireIndex, tire.MaxAirPressure);
-                        tire.CurrAirPressure = (float)ConsoleUtilities.GetPosNumFromUser(userMessage, !k_OnlyIntegerAllowed, (decimal)tire.MaxAirPressure);
+                        tire.CurrAirPressure = (float)ConsoleUtilities.GetPosNumFromUser(userMessage, !k_OnlyIntegerAllowed);
                         inputIsValid = true;
                     }
                     catch (Exception exception)
@@ -276,6 +299,7 @@ namespace Ex03.ConsoleUI
             }
         }
 
+        // Iterating on all features that have been defined, and ask for user to fill each feature seperately
         private void getAndUpdateFeaturesInfo(VehicleInfo i_NewVehicleInfo)
         {
             foreach (Feature feature in i_NewVehicleInfo.FeaturesList)
@@ -299,6 +323,7 @@ namespace Ex03.ConsoleUI
             }
         }
 
+        // Asking user wether he wants to filter results, then shows the filtered/unfiltered list of registration numbers
         private void presentRegistrationNumbersList()
         {
             try
@@ -324,6 +349,7 @@ namespace Ex03.ConsoleUI
             }
         }
 
+        // helper Method to get from user an enum option of all listing and casting properly
         private VehicleListing.eVehicleStatus getVehicleStatus()
         {
             int userChoice = ConsoleUtilities.ChooseEnumValue(typeof(VehicleListing.eVehicleStatus));
@@ -331,6 +357,7 @@ namespace Ex03.ConsoleUI
             return (VehicleListing.eVehicleStatus)userChoice;
         }
 
+        // helper Method to get from user an enum option of all listing and casting properly
         private FuelEnergySource.eFuelType getFuelType()
         {
             int userChoice = ConsoleUtilities.ChooseEnumValue(typeof(FuelEnergySource.eFuelType));
@@ -344,12 +371,14 @@ namespace Ex03.ConsoleUI
             LinkedList<string> registrationNumberList =
                 this.m_GarageSystem.GetRegistrationNumbersList(i_VehicleStatusToFilterBy);
            
+            // There is no listing with current status filter
             if(!registrationNumberList.Any())
             {
                 messageToUser.Append("Listing is empty!");
             }
             else
             {
+                // preparing a string containing all reg. numbers
                 foreach (string registrationNumber in registrationNumberList)
                 {
                     messageToUser.Append(registrationNumber + Environment.NewLine);
@@ -392,6 +421,7 @@ namespace Ex03.ConsoleUI
             bool actionIsDone = false;
             string registrationNumber = this.getRegistrationNumber(eInputKeyConstraints.Existing);
 
+            // while  fuel tank is filled successfully or bad use of action
             while (!actionIsDone)
             {
                 try
@@ -409,7 +439,7 @@ namespace Ex03.ConsoleUI
                 }
                 catch (ArgumentException argumentException)
                 {
-                    ConsoleUtilities.ShowBadInputMessage(argumentException.Message);
+                    ConsoleUtilities.PromptMessage(argumentException.Message);
                     actionIsDone = true;
                 }
             }
@@ -420,6 +450,7 @@ namespace Ex03.ConsoleUI
             bool actionIsDone = false;
             string registrationNumber = this.getRegistrationNumber(eInputKeyConstraints.Existing);
 
+            // while battery charged successfully or bad use of action
             while (!actionIsDone)
             {
                 try
@@ -436,12 +467,13 @@ namespace Ex03.ConsoleUI
                 }
                 catch (ArgumentException argumentException)
                 {
-                    ConsoleUtilities.ShowBadInputMessage(argumentException.Message);
+                    ConsoleUtilities.PromptMessage(argumentException.Message);
                     actionIsDone = true;
                 }
             }
         }
 
+        // presenting to user all vehicle data
         private void showVehicleData()
         {
             try

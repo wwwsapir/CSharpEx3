@@ -4,6 +4,7 @@ namespace Ex03.GarageLogic
 {
     public static class VehicleCreator
     {
+        // All values in the Lists below, contain values indexed respectively to eVehicleType 
         private static readonly List<byte> sr_NumOfTires = new List<byte>() { 2, 2, 4, 4, 12 };
         private static readonly List<byte> sr_NumOfFeatures = new List<byte>() { 2, 2, 2, 2, 2 };
         private static readonly List<float> sr_MaxAirPressure = new List<float>() { 32, 32, 29, 29, 34 };
@@ -25,6 +26,7 @@ namespace Ex03.GarageLogic
             Truck
         }
 
+        // encapsulating the description list of vehicle types
         public static List<string> VehicleTypesDesc
         {
             get
@@ -33,8 +35,10 @@ namespace Ex03.GarageLogic
             }
         }
 
+        // creating vehicle of the given type, filling it with basic data
         public static VehicleInfo CreateVehicle(eVehicleType i_VehicleType)
         {
+            // instantiating VehicleInfo object, and updating with general info that all vehicle's types have
             int vehicleTypeIndex = (int)i_VehicleType;
             VehicleInfo vehicleInfo = new VehicleInfo(
                 i_VehicleType,
@@ -42,6 +46,7 @@ namespace Ex03.GarageLogic
                 sr_NumOfFeatures[vehicleTypeIndex]);
             addTiresAndUpdateMaxAirPressure(vehicleInfo, sr_MaxAirPressure[vehicleTypeIndex]);
 
+            // adding more specific information for each vehicle type
             switch (i_VehicleType)
             {
                 case eVehicleType.Motorcycle:
@@ -66,6 +71,7 @@ namespace Ex03.GarageLogic
             return vehicleInfo;
         }
 
+        // updating each vehicle with predefined info: EnergySource and extra properties
         private static void createTruck(VehicleInfo i_VehicleInfo)
         {
             FuelEnergySource.eFuelType k_FuelType = FuelEnergySource.eFuelType.Soler;
@@ -114,6 +120,7 @@ namespace Ex03.GarageLogic
             i_VehicleInfo.FeaturesList.Add(new EngineCapacityFeature());
         }
 
+        // Creating tires list for vehicle , and updating the max air pressure which the given one
         private static void addTiresAndUpdateMaxAirPressure(VehicleInfo i_VehicleInfo, float i_MaxAirPressure)
         {
             byte numOfTires = sr_NumOfTires[(int)i_VehicleInfo.VehicleType];

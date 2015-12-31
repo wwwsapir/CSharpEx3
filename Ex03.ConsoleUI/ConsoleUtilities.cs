@@ -12,6 +12,7 @@ namespace Ex03.ConsoleUI
         private const int k_MaxNumOfAllowedChars = 30;
         private const bool k_OnlyIntegerAllowed = true;
 
+        // clear screen and prompt message to user
         public static void PromptMessage(string i_Message)
         {
             Console.Clear();
@@ -47,11 +48,13 @@ namespace Ex03.ConsoleUI
             return resultValue.Value;
         }
 
+        // Overload of getting non empty string from user, with predefined max length
         public static string GetInputString(string i_MessageToUser)
         {
             return GetInputString(i_MessageToUser, k_MaxNumOfAllowedChars);
         }
 
+        // Overload of getting non empty string from user, with given max length
         public static string GetInputString(string i_MessageToUser, int i_MaxNumOfAllowedChars)
         {
             Console.WriteLine(i_MessageToUser);
@@ -67,17 +70,36 @@ namespace Ex03.ConsoleUI
             return inputString;
         }
 
-        public static decimal GetPosNumFromUser(string i_MessageToUser, bool i_OnlyInteger)
+        // getting positive number from user.if i_IntegerOnly == true then only integers allowed, otherwise decimal point allowed
+        public static decimal GetPosNumFromUser(string i_MessageToUser, bool i_IntegerOnly)
         {
-            return GetPosNumFromUser(i_MessageToUser, i_OnlyInteger, decimal.MaxValue);
+            bool numIsPositive = false;
+            decimal inputNumber;
+            do
+            {
+                inputNumber = GetNonNegativeNumFromUser(i_MessageToUser, i_IntegerOnly);
+                if (inputNumber == 0)
+                {
+                    ShowBadInputMessage("Zero value is not allowed");
+                }
+                else
+                {
+                    numIsPositive = true;
+                }
+            }
+            while (!numIsPositive);
+
+            return inputNumber;
         }
 
-        public static decimal GetPosNumFromUser(string i_MessageToUser, bool i_OnlyInteger, decimal i_MaxValue)
+        // overload of getting non-negative number from user, with an option to define maximum value
+        public static decimal GetNonNegativeNumFromUser(string i_MessageToUser, bool i_IntegerOnly)
         {
             decimal decimalParseRes;
             NumberStyles style;
 
-            if (i_OnlyInteger)
+            // updating parsing arguments
+            if (i_IntegerOnly)
             {
                 style = NumberStyles.Integer;
             }
@@ -88,30 +110,16 @@ namespace Ex03.ConsoleUI
 
             string inputString;
             bool parsingSuccess;
-            bool parseResInRange;
-            bool inputIsValid;
             do
             {
                 inputString = GetInputString(i_MessageToUser, k_MaxNumOfDigitsInInput);
                 parsingSuccess = decimal.TryParse(inputString, style, CultureInfo.CurrentCulture, out decimalParseRes);
-                parseResInRange = decimalParseRes > 0 && decimalParseRes <= i_MaxValue;
-                inputIsValid = parsingSuccess && parseResInRange;
-
                 if (!parsingSuccess)
                 {
                     ShowBadInputMessage("Only digits allowed");
                 }
-                else if (parsingSuccess && decimalParseRes == 0)
-                {
-                    ShowBadInputMessage("Zero value not allowed");
-                }
-                else if (parsingSuccess && !parseResInRange)
-                {
-                    string userMessage = string.Format("Input Out Of Range. Max value: {0}", i_MaxValue);
-                    ShowBadInputMessage(userMessage);
-                }
             }
-            while (!inputIsValid);
+            while (!parsingSuccess);
 
             return decimalParseRes;
         }
@@ -121,6 +129,7 @@ namespace Ex03.ConsoleUI
             Console.WriteLine("Input Error; " + i_Reason);
         }
 
+        // getting enum type, asking user to choose one of the option, showing all listing possible using reflection
         public static int ChooseEnumValue(Type i_EnumType)
         {
             List<string> valuesDesc = new List<string>();
@@ -133,6 +142,7 @@ namespace Ex03.ConsoleUI
             return ChooseEnumValue(i_EnumType, valuesDesc);
         }
 
+        // overloadto ChooseEnumValue, here showing all possible values using i_ValuesDesc, that must contains all possible enum description respectively
         public static int ChooseEnumValue(Type i_EnumType, List<string> i_ValuesDesc)
         {
             if (i_ValuesDesc == null)
@@ -158,6 +168,7 @@ namespace Ex03.ConsoleUI
             return choice - 1;
         }
 
+        // showing a list of of strings, each with unique index
         private static void showListingChoices(List<string> i_ValuesDesc)
         {
             string userMessage = string.Empty;

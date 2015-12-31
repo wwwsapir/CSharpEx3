@@ -20,7 +20,7 @@
                   if (value > this.r_MaxAirPressure)
                   {
                       string exceptionStr = string.Format(
-                         "The given Air Pressure is not valid. Max time is {0} hours.",
+                         "The given Air Pressure is not valid. Max Air Pressure is {0}",
                          this.r_MaxAirPressure);
                       throw new ValueOutOfRangeException(exceptionStr, value, 0, this.r_MaxAirPressure);
                   }

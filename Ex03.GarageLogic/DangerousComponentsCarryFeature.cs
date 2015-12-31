@@ -8,7 +8,7 @@ namespace Ex03.GarageLogic
 
         public DangerousComponentsCarryFeature()
         {
-            m_Description = "Dangerous Components";
+            m_Description = "Contains Dangerous Components";
             this.m_PossibleValues = "{Yes/No}";
         }
 
@@ -42,14 +42,15 @@ namespace Ex03.GarageLogic
             get
             {
                 string toReturn;
-                if (m_ContainsDangeroudComponents == true)
+                if (m_ContainsDangeroudComponents)
                 {
                     toReturn = "yes";
                 }
-                else   // m_ContainsDangeroudComponents == false
-                {
+                else
+                {  // m_ContainsDangeroudComponents == false
                     toReturn = "no";
                 }
+
                 return toReturn;
             }
         }
