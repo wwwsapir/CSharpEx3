@@ -42,7 +42,7 @@
             return string.Format(
 @"
 Owner Name: {0}
-Owner Phone NUmber: {1}",
+Owner Phone Number: {1}",
                         this.m_Name,
                         this.m_PhoneNumber);
         }

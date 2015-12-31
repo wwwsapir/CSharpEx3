@@ -106,6 +106,7 @@ namespace Ex03.ConsoleUI
                     // If vehicle already is in the system then updating only basic info regarding tires and energy source
                     VehicleListing existingVehicleListing = this.m_GarageSystem.GetListing(inputRegistrationNumber);
                     existingVehicleListing.VehicleStatus = VehicleListing.eVehicleStatus.InRepair;
+                    Console.WriteLine("Vehicle already exists in system. Status changed to 'InRepaire'.");
                     getAndUpdateTiresInfo(existingVehicleListing.VehicleInfo);
                     getAndUpdateEnergySourceInfo(existingVehicleListing.VehicleInfo);
                 }
@@ -234,7 +235,7 @@ namespace Ex03.ConsoleUI
                 try
                 {
                     string userMessage = string.Format(
-                        "Please Enter Remainding Battery Hours (Max value: {0})",
+                        "Please Enter Remaining Battery Hours (Max value: {0})",
                         i_ElectricEnergySource.MaxBatteryHours);
                     batterHoursLeft = (float)ConsoleUtilities.GetNonNegativeNumFromUser(userMessage, !k_OnlyIntegerAllowed);
                     i_ElectricEnergySource.BatteryHoursLeft = batterHoursLeft;
